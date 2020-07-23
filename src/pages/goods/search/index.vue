@@ -1,7 +1,7 @@
 <template>
   <div class="search">
-    <good-search></good-search>
-    <search-list></search-list>
+    <good-search v-if="isSearch"></good-search>
+    <search-list v-else></search-list>
   </div>
 </template>
 <script>
@@ -14,7 +14,8 @@ export default {
     },
   data() {
     return {
-      searchVal: ""
+      searchVal: "",
+      isSearch:false
     };
   },
   methods: {
