@@ -62,6 +62,7 @@ export default {
       localStorage.setItem("historyArray", JSON.stringify('[]'));
     },
     onCancel() {
+      this.searchVal = ''
       // console.log()
     }
   }

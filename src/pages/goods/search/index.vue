@@ -15,7 +15,7 @@ export default {
   data() {
     return {
       searchVal: "",
-      isSearch:false
+      isSearch:true
     };
   },
   methods: {
