@@ -12,8 +12,9 @@
           placeholder="请输入搜索关键词"
           slot="title"
           shape="round"
+          @focus='goSearch'
         />
-        <van-icon :name="icon" slot="right" size=".4rem"/>
+        <van-icon :name="icon" slot="right" size=".4rem" />
       </van-nav-bar>
     </div>
     <div style="display: flex;justify-content: space-around;font-size: .28rem;">
@@ -49,7 +50,7 @@
               style="max-width: 100%;max-height: 100%;position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);"
               v-if="item.imageUrl"
             />
-            <img src="@/assets/search/bitmap.png" alt="" v-else>
+            <img src="@/assets/search/bitmap.png" alt="" v-else />
           </div>
 
           <div style="margin-left: .4rem;">
@@ -74,6 +75,10 @@
         </div>
       </van-list>
     </div>
+    <div v-else style="text-align:center;margin-top: 1rem;">
+      <img src="@/assets/search/noData@2x.png" alt="" style="width:4.8rem" />
+      <p>抱歉，这个星球找不到呢！</p>
+    </div>
   </div>
 </template>
 <script>
@@ -83,7 +88,7 @@ import listIcon from "@/assets/search/list@2x.png";
 import api from "@/api";
 import { buildImagePath } from "@/util";
 import filters from "@/filters";
-import bitmap from '@/assets/search/bitmap.png'
+import bitmap from "@/assets/search/bitmap.png";
 export default {
   components: {
     [Search.name]: Search,
@@ -95,7 +100,7 @@ export default {
   },
   data() {
     return {
-      bitmap:bitmap,
+      bitmap: bitmap,
       loading: false,
       finished: false,
       searchValue: "",
@@ -133,10 +138,15 @@ export default {
     };
   },
   created() {
+    this.keyword = this.$route.query.value;
+    console.log("this.keyword", this.keyword);
     this.obj.orderByCombinationScore = this.orderByCombinationScore;
     this.onLoad();
   },
   methods: {
+    goSearch(){
+      this.$emit('goSearch')
+    },
     changeSelect(i) {
       this.tabs.filter((item, index) => {
         item.isActive = i == index;
@@ -146,8 +156,8 @@ export default {
           delete this.obj[item.key];
         }
       });
-      this.pageInfo.pageNo=1;
-      this.onLoad()
+      this.pageInfo.pageNo = 1;
+      this.onLoad();
     },
     //处理钱
     handelMoney(money) {
@@ -165,17 +175,17 @@ export default {
     },
     async onLoad() {
       this.loading = true;
-      if(this.pageInfo.pageNo==1){
-        this.listArray = []
+      if (this.pageInfo.pageNo == 1) {
+        this.listArray = [];
       }
       let params = { ...this.obj, ...this.pageInfo, keyword: this.keyword };
       let data = await api.get(`search-api/m/mall/goods/search`, params);
       console.log(data);
       if (data.state == 1) {
-        if(data.data && data.data.length==this.pageInfo.pageSize){
+        if (data.data && data.data.length == this.pageInfo.pageSize) {
           this.listArray = this.listArray.concat(data.data);
           this.pageInfo.pageNo++;
-        }else if(data.data && data.data.length<this.pageInfo.pageSize){
+        } else if (data.data && data.data.length < this.pageInfo.pageSize) {
           this.listArray = this.listArray.concat(data.data);
           this.finished = true;
         }

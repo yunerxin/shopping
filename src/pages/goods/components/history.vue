@@ -20,6 +20,7 @@
           style="padding-bottom: .2rem;border-bottom: 1px solid #f5f5f5;"
           v-for="(item, i) in arrayList"
           :key="i"
+          @click="searchResult(item.value)"
         >
           {{item.value}}
         </p>
@@ -55,7 +56,12 @@ export default {
         this.arrayList.push(obj)
         this.arrayList = _.uniqWith(this.arrayList,_.isEqual);
         localStorage.setItem("historyArray", JSON.stringify(this.arrayList));
+        this.searchResult(value);
       }
+    },
+    searchResult(value){
+      this.$router.push(`search?value=${value}`);
+      this.$emit('searchResult')
     },
     deletHistory(){
       this.arrayList = []

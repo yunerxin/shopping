@@ -1,7 +1,7 @@
 <template>
   <div class="search">
-    <good-search v-if="isSearch"></good-search>
-    <search-list v-else></search-list>
+    <good-search v-if="isSearch" @searchResult='isSearch=false'></good-search>
+    <search-list v-else @goSearch='isSearch=true'></search-list>
   </div>
 </template>
 <script>
