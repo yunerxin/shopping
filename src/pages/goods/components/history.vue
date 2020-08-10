@@ -56,11 +56,12 @@ export default {
         this.arrayList.push(obj)
         this.arrayList = _.uniqWith(this.arrayList,_.isEqual);
         localStorage.setItem("historyArray", JSON.stringify(this.arrayList));
-        this.searchResult(value);
       }
+      this.searchResult(value);
     },
     searchResult(value){
-      this.$router.push(`search?value=${value}`);
+      let params = value?`value=${value}`:'';
+      this.$router.push(`search?${params}`);
       this.$emit('searchResult')
     },
     deletHistory(){
