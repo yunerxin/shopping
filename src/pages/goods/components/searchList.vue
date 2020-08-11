@@ -13,7 +13,7 @@
     </div>
     <div v-if="listArray.length > 0" style="padding:0 .3rem" :class="isList?'verticalRank':'horizontalRank'">
       <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
-        <div class="list" v-for="(item, i) in listArray" :key="i">
+        <div class="list" v-for="(item, i) in listArray" :key="i" @click='jumpDetail(item.id)'>
           <div :class="isList?'left':'top'">
             <img :src="handelImg(item.imageUrl, 'PD750')" alt="" v-if="item.imageUrl" />
             <img src="@/assets/search/bitmap.png" alt="" v-else />
@@ -161,6 +161,9 @@
           Toast.fail(data.msg);
         }
         this.loading = false;
+      },
+      jumpDetail(id){
+        this.$router.push(`details?productId=${id}`)
       }
     }
   };

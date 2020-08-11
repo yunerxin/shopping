@@ -12,6 +12,11 @@ export default{
             path:'list',
             name:'list',
             component: (resolve) => require(['@/pages/goods/list/'], resolve) // 商品列表
+        },
+        {
+            path:'details',
+            name:'details',
+            component: (resolve) => require(['@/pages/goods/details/'], resolve) // 商品详情
         }
     ]
 }
