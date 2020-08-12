@@ -1,0 +1,30 @@
+.orderForm{
+    p{
+        margin: 0;
+    }
+    .van-nav-bar{
+        /deep/ .van-icon{
+            color: #000;
+        }
+    }
+    &-address{
+        padding: .3rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        p{
+            &:first-child{
+                font-size: .32rem;
+                line-height: .4rem;
+                color: #333;
+                font-weight: 600;
+            }
+            &:last-child{
+                font-size: .24rem;
+                color: #666;
+                line-height: .24rem;
+                margin-top: .2rem;
+            }
+        }
+    }
+}
