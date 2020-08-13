@@ -1,25 +1,36 @@
 <template>
     <div class="goods-list">
         <div class="goods-list-left">
-            <img src="" alt="">
+            <img :src="handelImg(item.imgPath,'SQ120')" alt="">
         </div>
         <div class="goods-list-right">
-            <p class="goods-list-right-name">Lenovo/联想 小新潮7000 i5笔记本电脑 轻薄便捷 学生超薄商务</p>
-            <p class="goods-list-right-color">颜色:白色白色白色白色白色、尺寸:LLLLLLL</p>
-            <p class="goods-list-right-money"><span style="font-weight:600">￥{{handelMoney(324)}}</span><span style="color: #666;">x1</span></p>
+            <p class="goods-list-right-name">{{item.name}}</p>
+            <p class="goods-list-right-color">颜色:{{item.code1}}、尺寸:LLLLLLL</p>
+            <p class="goods-list-right-money"><span style="font-weight:600">￥{{handelMoney(item.price)}}</span><span
+                    style="color: #666;">x{{item.count}}</span></p>
         </div>
     </div>
 </template>
 <script>
     import filter from '@/filters'
+    import { buildImagePath } from "@/util";
     export default {
+        props: {
+            'item': {
+                type: Object
+            }
+        },
         data() {
             return {}
         },
-        methods:{
-            handelMoney(money){
+        methods: {
+            handelMoney(money) {
                 return filter.getCurrency(money)
-            }
+            },
+            //处理图片
+            handelImg(imgUrl, size) {
+                return buildImagePath(imgUrl, size);
+            },
         }
     }
 </script>
@@ -29,7 +40,8 @@
         background-color: #f5f5f5;
         border-bottom: 5px solid #fff;
         display: flex;
-        p{
+
+        p {
             margin: 0;
         }
 
@@ -64,13 +76,15 @@
                 -webkit-box-orient: vertical;
                 overflow: hidden;
             }
-            &-color{
+
+            &-color {
                 color: #666;
                 font-size: .24rem;
                 line-height: .4rem;
                 margin-bottom: 4px;
             }
-            &-money{
+
+            &-money {
                 display: flex;
                 justify-content: space-between;
             }
