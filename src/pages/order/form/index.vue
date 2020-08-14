@@ -6,8 +6,9 @@
         <div>
             <div class="orderForm-address" @click='jumpAddress()'>
                 <div>
-                    <p><span>{{defalutInfo.receiptName}}</span><span style="margin-left: .2rem;">{{defalutInfo.receiptPhone}}</span></p>
-                    <p>{{defalutInfo.completeAddress}}</p>
+                    <p><span>{{defalutInfo.name}}</span><span
+                            style="margin-left: .2rem;">{{defalutInfo.tel}}</span></p>
+                    <p>{{defalutInfo.address}}</p>
                 </div>
                 <van-icon name="arrow" size='.32rem' />
             </div>
@@ -18,7 +19,7 @@
         </div>
         <div style="height:84px">
             <van-submit-bar :price="calculateObj.allPrice*100" button-text="提交订单" @submit="onSubmit">
-                <template #tip>收货地址：上海市浦东新区张东路1388号19棟</template>
+                <template #tip>收货地址：{{defalutInfo.address}}</template>
             </van-submit-bar>
         </div>
     </div>
@@ -28,6 +29,7 @@
     import formList from "../components/formList.vue"
     import api from "@/api"
     import _ from "lodash"
+    import { mapGetters } from "vuex";
     export default {
         components: {
             [NavBar.name]: NavBar,
@@ -38,23 +40,22 @@
         },
         data() {
             return {
-                sid: '',
                 shoppingcartId: '',
-                shopsArray: [],
-                array: [1, 2, 3],
-                calculateObj: {},
-                addressList:[],
-                defalutInfo:{}
             }
         },
+        computed: {
+            ...mapGetters({
+                calculateObj: "orderForm/calculate",
+                shopsArray:"orderForm/shopsArray",
+                defalutInfo:"orderForm/defalutInfo"
+            })
+        },
         async created() {
-            this.sid = localStorage.getItem('sid');
             this.shoppingcartId = this.$route.query.shoppingcartId || '5751386,5751373,5751387,5751375';
-            let params2 = {
+            let params1 = {
                 "cityId": 7448,
                 "active": 0,
                 "regionId": 7449,
-                "sid": this.sid,
                 "shoppingcartId": this.shoppingcartId,
                 "allIntegralPrice": 0,
                 "terminal": "P_TERMINAL_MOBILE",
@@ -63,13 +64,8 @@
                 "count": 0,
                 "couponParams": [{ "shopId": 0, "couponId": "" }]
             }
-            let calculateObj = await api.post2(`order-api/m/mall/price/calculate?sid=${this.sid}`, params2);
-            if (calculateObj.state == 1) {
-                this.calculateObj = calculateObj.data || {};
-            } else {
-                Toast(calculateObj.msg)
-            }
-            let params = {
+            await this.$store.dispatch("orderForm/calculateFun", params1);
+            let params2 = {
                 shoppingcartId: this.shoppingcartId,
                 commodityId: 0,
                 specifications: '',
@@ -80,32 +76,10 @@
                 parentOpenGroupId: 0,
                 activeId: 0,
                 terminal: 'P_TERMINAL_MOBILE',
-                sid: this.sid,
                 insideCode: ''
             };
-            let data = await api.post(`order-api/m/mall/init`, params)
-            if (data.state == 1) {
-                if (data.data.shops && data.data.shops.length > 0) {
-                    data.data.shops.filter(val => {
-                        this.calculateObj.shopOverallPrice.filter(item => {
-                            if (item.shopId == val.shopsId) {
-                                val.postage = item.postage;
-                                val.singleShopSumPrice = item.singleShopSumPrice
-                            }
-                        })
-                    })
-                }
-                this.shopsArray = data.data.shops || [];
-            } else {
-                Toast(data.msg)
-            }
-            let addressList = await api.post(`order-api/m/mall/receipt-address/list?sid=${this.sid}`);
-            if(addressList.state==1){
-                this.addressList = addressList.data.receiptAddressList.list || [];
-                this.defalutInfo = _.find(this.addressList, function(item) { return item.defalutAddress == 1; });
-            }else{
-                Toast(addressList.msg)
-            }
+            await this.$store.dispatch("orderForm/initFun", params2)
+            await this.$store.dispatch("orderForm/addressList");
         },
         methods: {
             onClickLeft() {
@@ -114,7 +88,7 @@
             onSubmit() {
                 Toast('提交订单')
             },
-            jumpAddress(){
+            jumpAddress() {
                 this.$router.push('/address/list')
             }
         }

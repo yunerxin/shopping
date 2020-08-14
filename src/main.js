@@ -5,6 +5,7 @@ import App from './App'
 import router from './router'
 import 'vant/lib/index.css';
 import adaptive from "./global/js/adaptive"
+import store from './vuex/store'
 adaptive.desinWidth = 750
 adaptive.baseFont = 24
 adaptive.scaleType = 1
@@ -16,6 +17,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })
