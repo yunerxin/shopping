@@ -1,5 +1,5 @@
 <template>
-    <div class="goods-detail">
+    <div class="goods-detail" v-if='productDetail.title'>
         <!-- 轮播图 -->
         <van-swipe :autoplay="3000" v-if='productImgs.length>0'>
             <van-swipe-item v-for="(image, index) in productImgs" :key="index">
@@ -11,18 +11,23 @@
             <p class="goods-detail-info-price">￥{{handelMoney(productDetail.intrinsicPrice)}}</p>
             <p class="goods-detail-info-title">{{productDetail.title}}</p>
             <p class="goods-detail-info-sub">{{productDetail.productSubtitle}}</p>
-            <p class="goods-detail-info-num"><span>月销{{productDetail.initialNumber}}</span><span>{{productDetail.cityName}}&nbsp;&nbsp;{{productDetail.regionName}}</span></p>
+            <p class="goods-detail-info-num">
+                <span>月销{{productDetail.initialNumber}}</span><span>{{productDetail.cityName}}&nbsp;&nbsp;{{productDetail.regionName}}</span>
+            </p>
         </div>
         <!-- 选择规格和配送地址 -->
         <div class="goods-detail-select">
             <!-- 选择规格 -->
             <select-sku :productId='productId' :code='productDetail.code'></select-sku>
-            <div class="goods-detail-select-address"><p><span style="color: #999;margin-right: .6rem;">参数</span><span>上市年份季节材质分成穿搭方式袖长</span></p><van-icon name="arrow" /></div>
+            <div class="goods-detail-select-address">
+                <p><span style="color: #999;margin-right: .6rem;">送至</span><span>请选择地区</span></p>
+                <van-icon name="arrow" />
+            </div>
         </div>
     </div>
 </template>
 <script>
-    import { Swipe, SwipeItem, Toast, Icon } from 'vant';
+    import { Swipe, SwipeItem, Toast, Icon, Dialog } from 'vant';
     import { buildImagePath } from "@/util";
     import api from "@/api"
     import filters from '@/filters'
@@ -32,15 +37,16 @@
             [Swipe.name]: Swipe,
             [SwipeItem.name]: SwipeItem,
             [Toast.name]: Toast,
-            [Icon.name]:Icon,
+            [Icon.name]: Icon,
+            [Dialog.name]: Dialog,
             selectSku
         },
         data() {
             return {
-                sid:'',
+                sid: '',
                 productId: '',
                 productImgs: [],
-                productDetail:{}
+                productDetail: {}
             }
         },
         async created() {
@@ -52,7 +58,16 @@
                 this.productImgs = data.data.product.productPics || [];
                 this.productDetail = data.data.product || {}
             } else {
-                Toast(data.msg)
+                Dialog.alert({
+                    message: data.msg,
+                    className: 'errorDialog',
+                    confirmButtonColor: 'red',
+                    overlayStyle: {
+                        'background-color': 'rgba(0,0,0,.9)'
+                    }
+                }).then(() => {
+                    this.$router.go(-1)
+                });
             }
         },
         methods: {
@@ -61,7 +76,7 @@
                 return buildImagePath(imgUrl, size);
             },
             //处理钱
-            handelMoney(money){
+            handelMoney(money) {
                 return filters.getCurrency(money)
             }
         }
@@ -69,4 +84,16 @@
 </script>
 <style lang='scss' scoped>
     @import './index.scss';
+</style>
+<style lang='scss'>
+    .errorDialog {
+        width: 70vw !important;
+        /deep/ .van-dialog__confirm {
+            background: red !important;
+            color: #fff !important;
+        }
+        /deep/ .van-dialog__message{
+            font-size: 16px;
+        }
+    }
 </style>

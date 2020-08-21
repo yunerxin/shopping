@@ -4,7 +4,7 @@
             <van-nav-bar title="收货地址" left-arrow @click-left="onClickLeft" />
         </div>
         <van-address-list v-model="selectedAddressId" :list="addressList" @add="addAddress" @edit="editAddress"
-            @click-item='modifyDefalut()' />
+            @select='modifyDefalut' />
     </div>
 </template>
 <script>
@@ -44,12 +44,14 @@
                 this.$router.go(-1)
             },
             editAddress(item, index) {
-                console.log(item, '_____________', index)
+                this.$router.push(`edit?id=${item.id}`)
             },
-            addAddress() { },
-            async modifyDefalut() {
+            addAddress() {
+                this.$router.push('add')
+            },
+            async modifyDefalut(item,index) {
                 let params = {
-                    id: this.selectedAddressId,
+                    id: item.id,
                     sid:localStorage.getItem('sid')
                 };
                 let data = await api.post(`order-api/m/mall/receipt-address/set-default`, params);;

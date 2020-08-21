@@ -1,0 +1,56 @@
+.address-add{
+    .grayBgc{
+        background-color: #999 !important;
+    }
+    .van-nav-bar {
+        /deep/ .van-icon {
+            color: #000 !important;
+        }
+
+        /deep/ .van-nav-bar__text {
+            color: #323233 !important;
+        }
+    }
+
+    .van-address-edit {
+        padding: 0 !important;
+    }
+
+    .address {
+        display: flex;
+        margin: 0 16px;
+        font-size: 14px;
+        border-bottom: 1px solid #ebedf0;
+        align-items: center;
+        .van-cell::after{
+            border-bottom: none;
+        }
+        /deep/ .van-cell{
+            padding-left: 0 !important;
+        }
+
+        &-detail {
+            // flex: 1;
+            // justify-content: space-between;
+            // display: flex;
+            // align-items: center;
+        }
+    }
+
+    .address-bottom {
+        padding: .3rem;
+        position: absolute;
+        bottom: 0;
+        width: 100vw;
+        box-sizing: border-box;
+
+        /deep/ .van-button--large {
+            height: 10.67vw;
+        }
+    }
+
+    .grayBgc {
+        background-color: #999 !important;
+        border-color: #999;
+    }
+}

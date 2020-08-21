@@ -2,7 +2,7 @@
     <div>
         <div @click='selectSku' class="select-sku">
             <p><span style="color: #999;margin-right: .6rem;">规格</span><span
-                    v-if='code'>{{code.replace(/\_/g," ")}}</span><span v-else>选择属性名称</span></p>
+                    v-if='code'>{{code.replace(/\_/g," ")}}</span><span v-else>选择规格参数</span></p>
             <van-icon name="arrow" />
         </div>
         <van-sku v-model="showSku" :sku="sku" :goods="goods" :hide-stock="sku.hide_stock" @buy-clicked="onBuyClicked"

@@ -4,11 +4,17 @@
             <van-nav-bar title="填写订单" left-arrow @click-left="onClickLeft" :fixed='true' />
         </div>
         <div>
-            <div class="orderForm-address" @click='jumpAddress()'>
+            <div class="orderForm-address" @click='jumpList()' v-if='defalutInfo.name'>
                 <div>
-                    <p><span>{{defalutInfo.name}}</span><span
-                            style="margin-left: .2rem;">{{defalutInfo.tel}}</span></p>
+                    <p><span>{{defalutInfo.name}}</span><span style="margin-left: .2rem;">{{defalutInfo.tel}}</span></p>
                     <p>{{defalutInfo.address}}</p>
+                </div>
+                <van-icon name="arrow" size='.32rem' />
+            </div>
+            <div class="orderForm-address" @click='jumpAdd()' v-else>
+                <div style="display: flex;align-items: center;">
+                    <img src="@/assets/order/add.png" alt="" style="width:.3rem;height:.3rem">
+                    <p style="margin: 0 0 0 2vw;font-size: 4vw;font-weight: 700;">添加收获地址</p>
                 </div>
                 <van-icon name="arrow" size='.32rem' />
             </div>
@@ -19,13 +25,13 @@
         </div>
         <div style="height:84px">
             <van-submit-bar :price="calculateObj.allPrice*100" button-text="提交订单" @submit="onSubmit">
-                <template #tip>收货地址：{{defalutInfo.address}}</template>
+                <template #tip v-if='defalutInfo.name'>收货地址：{{defalutInfo.address}}</template>
             </van-submit-bar>
         </div>
     </div>
 </template>
 <script>
-    import { NavBar, Icon, Toast, SubmitBar } from 'vant';
+    import { NavBar, Icon, Toast, SubmitBar, Dialog } from 'vant';
     import formList from "../components/formList.vue"
     import api from "@/api"
     import _ from "lodash"
@@ -36,7 +42,8 @@
             [Icon.name]: Icon,
             [Toast.name]: Toast,
             formList,
-            [SubmitBar.name]: SubmitBar
+            [SubmitBar.name]: SubmitBar,
+            [Dialog.name]: Dialog
         },
         data() {
             return {
@@ -46,8 +53,8 @@
         computed: {
             ...mapGetters({
                 calculateObj: "orderForm/calculate",
-                shopsArray:"orderForm/shopsArray",
-                defalutInfo:"orderForm/defalutInfo"
+                shopsArray: "orderForm/shopsArray",
+                defalutInfo: "orderForm/defalutInfo"
             })
         },
         async created() {
@@ -80,6 +87,22 @@
             };
             await this.$store.dispatch("orderForm/initFun", params2)
             await this.$store.dispatch("orderForm/addressList");
+            if (!this.defalutInfo.name) {
+                Dialog.confirm({
+                    title: '您还没有收货地址',
+                    message: '快去新增一个吧！',
+                    confirmButtonText: "新增地址",
+                    cancelButtonText: "返回",
+                    className: "formDialog"
+                })
+                    .then(async () => {
+                        // on confirm
+                        this.$router.push('/address/add')
+                    })
+                    .catch(() => {
+                        // on cancel
+                    });
+            }
         },
         methods: {
             onClickLeft() {
@@ -88,12 +111,25 @@
             onSubmit() {
                 Toast('提交订单')
             },
-            jumpAddress() {
+            jumpList() {
                 this.$router.push('/address/list')
+            },
+            jumpAdd(){
+                this.$router.push('/address/add')
             }
         }
     }
 </script>
 <style lang='scss' scoped>
     @import "./index.scss";
+</style>
+<style lang='scss'>
+    .formDialog {
+        width: 70vw !important;
+
+        .van-dialog__confirm {
+            background: linear-gradient(90deg, red, #ff2e5d);
+            color: #fff;
+        }
+    }
 </style>

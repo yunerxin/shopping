@@ -77,6 +77,7 @@ const mutations = {
             };
 
             data.data.receiptAddressList.list.map((item) => {
+                item.localAddress = (item.cityName || '')+' '+(item.regionName || '')+' '+(item.blockName || '')+' '+(item.townName || '');
                 _.forEach(keyMaps, (newKey, oldKey) => {
                     item[newKey] = item[oldKey];
                     delete item[oldKey];
@@ -85,8 +86,11 @@ const mutations = {
             });
         }
         state.addressList = data.data.receiptAddressList.list || [];
-        state.selectedAddressId = _.find(state.addressList, function (item) { return item.defalutAddress == 1; }).id;
-        state.defalutInfo = _.find(state.addressList, function (item) { return item.defalutAddress == 1; });
+        if(state.addressList && state.addressList.length>0){
+            state.selectedAddressId = _.find(state.addressList, function (item) { return item.defalutAddress == 1; }).id;
+            state.defalutInfo = _.find(state.addressList, function (item) { return item.defalutAddress == 1 || null; });
+        }
+        
     }
 }
 const getters = {
