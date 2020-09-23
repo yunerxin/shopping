@@ -6,7 +6,8 @@ const state = {
     shopsArray: [],
     defalutInfo:{},
     addressList:[],
-    selectedAddressId:''
+    selectedAddressId:'',
+    terminal:localStorage.getItem('terminal')
 }
 const actions = {
     async calculateFun({
@@ -16,7 +17,8 @@ const actions = {
         let data = await api.post2(`order-api/m/mall/price/calculate?sid=${state.sid}`, 
         {
             ...params,
-            sid:state.sid
+            sid:state.sid,
+            terminal:state.terminal
         }
         );
         if (data.state == 1) {
@@ -30,7 +32,8 @@ const actions = {
     async initFun({ commit, state }, params) {
         let data = await api.post(`order-api/m/mall/init`, {
             ...params,
-            sid:state.sid
+            sid:state.sid,
+            terminal:state.terminal
         });
         if (data.state == 1) {
             commit('INIT_ORDER', {

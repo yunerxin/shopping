@@ -46,9 +46,7 @@
             [Dialog.name]: Dialog
         },
         data() {
-            return {
-                shoppingcartId: '',
-            }
+            return {}
         },
         computed: {
             ...mapGetters({
@@ -58,33 +56,19 @@
             })
         },
         async created() {
-            this.shoppingcartId = this.$route.query.shoppingcartId || '5751386,5751373,5751387,5751375';
-            let params1 = {
+            let params1 = {...this.$route.query,
                 "cityId": 7448,
                 "active": 0,
-                "regionId": 7449,
-                "shoppingcartId": this.shoppingcartId,
-                "allIntegralPrice": 0,
-                "terminal": "P_TERMINAL_MOBILE",
-                "commodityId": 0,
-                "specifications": "",
-                "count": 0,
-                "couponParams": [{ "shopId": 0, "couponId": "" }]
+                "regionId": 7449
             }
             await this.$store.dispatch("orderForm/calculateFun", params1);
-            let params2 = {
-                shoppingcartId: this.shoppingcartId,
-                commodityId: 0,
-                specifications: '',
-                count: 0,
+            let params2 = {...this.$route.query,
                 ignoreLogin: 1,
                 active: 0,
                 productGroupId: 0,
                 parentOpenGroupId: 0,
                 activeId: 0,
-                terminal: 'P_TERMINAL_MOBILE',
-                insideCode: ''
-            };
+            }
             await this.$store.dispatch("orderForm/initFun", params2)
             await this.$store.dispatch("orderForm/addressList");
             if (!this.defalutInfo.name) {
