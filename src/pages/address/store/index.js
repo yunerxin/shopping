@@ -2,6 +2,7 @@ import api from "@/api"
 import { Toast } from 'vant';
 const state = {
     sid: localStorage.getItem('sid'),
+    terminal:localStorage.getItem('terminal'),
     areaObj:{}
 }
 const actions = {
@@ -14,15 +15,27 @@ const actions = {
             data
         })
     },
+    async saveAddressFun({
+        commit,
+        state
+    }, params) {
+        let data = await api.post2(`order-api/m/mall/v1/receipt-address/savesid=${state.sid}`, {
+            ...params,
+            sid:state.sid,
+            terminal:state.terminal
+        });
+        console.log('data',data)
+        if(data.state==1){
+            Toast('地址保存成功')
+        }else{
+            Toast(data.mag)
+        }
+    },
 }
 const mutations = {
     AREA_LIST: (state, data) => {
-        console.log('????????????????',data.data);
-        data.data.filter((item,i)=>{
-            state.areaObj[item.id] = item.name
-        })
-
-    }
+        state.areaObj = data.data || []
+    },
 }
 const getters = {
     getAddress(state) {

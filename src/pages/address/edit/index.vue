@@ -1,11 +1,10 @@
 <template>
     <div>
-        <van-nav-bar title="编辑收货地址" right-text="删除" left-arrow @click-left="goBack()"
-            @click-right="deleteAddress" />
+        <van-nav-bar title="编辑收货地址" right-text="删除" left-arrow @click-left="goBack()" @click-right="deleteAddress" />
         <div>
             <van-field v-model="addressObj.name" label="姓名" placeholder="请输入姓名" />
             <van-field v-model="addressObj.tel" type='tel' label="手机号码" placeholder="请输入手机号" />
-            <div class="address">
+            <div class="address" @click='isChoose=true'>
                 <p class="address-label">所在地区</p>
                 <p class="address-detail">
                     <span>{{addressObj.localAddress}}</span>
@@ -18,7 +17,7 @@
             <van-button type="danger" round size="large" @click='saveEdit()' :class="{'grayBgc':!isSave}">保存
             </van-button>
         </div>
-        <select-address></select-address>
+        <select-address v-if='isChoose' @getAddressDetail='getAddressDetail'></select-address>
     </div>
 </template>
 <script>
@@ -39,12 +38,14 @@
         },
         data() {
             return {
+                isChoose: false,
                 id: '',
                 oldaddressObj: {},
                 addressObj: {},
                 isSave: true,
                 sid: localStorage.getItem('sid'),
-                terminal:localStorage.getItem('terminal')
+                terminal: localStorage.getItem('terminal'),
+                idObj:{},
             }
         },
         computed: {
@@ -60,8 +61,25 @@
             console.log('___________', this.addressObj)
         },
         methods: {
-            saveEdit() {
-
+            async saveEdit() {
+                // let params = {
+                //     blockId: 3,
+                //     cityId: 1,
+                //     completeAddress: "北京市 北京市 东城区 东华门街道办事处金秋路",
+                //     detailAddress: "金秋路",
+                //     houseNum: "",
+                //     id: 527620,
+                //     isDefault: 1,
+                //     lat: "",
+                //     lng: "",
+                //     receiptName: "李先生",
+                //     receiptPhone: "15036000000",
+                //     regionId: 2,
+                //     townId: 4,
+                //     zipCode: "",
+                // }
+                let params = Object.assign(this.addressObj,this.idObj)
+                await this.$store.dispatch('address/saveAddressFun',params);
             },
             deleteAddress() {
                 Dialog.confirm({
@@ -71,7 +89,7 @@
                     cancelButtonText: "取消",
                     className: "addressDialog"
                 })
-                    .then(async() => {
+                    .then(async () => {
                         // on confirm
                         let data = await api.post(`order-api/m/mall/receipt-address/delete?sid=${this.sid}&id=${this.id}`);
                         if (data.state == 1) {
@@ -112,6 +130,11 @@
                 } else {
                     this.$router.go(-1)
                 }
+            },
+            getAddressDetail(completeAddress, obj) {
+                this.idObj = obj;
+                this.addressObj.localAddress = completeAddress
+                this.isChoose = false;
             }
         },
         watch: {
