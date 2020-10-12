@@ -73,15 +73,6 @@
                 addressId: [] // 传给父组件的地址id
             }
         },
-        // async created() {
-        //     let params = {
-        //         regionId: this.regionId,
-        //         level: this.level
-        //     }
-        //     await this.$store.dispatch("address/areaListFun", params);
-        //     this.areaList['province_list'] = this.addressObj
-        //     console.log('areaList', this.areaList)
-        // },
         mounted() { this.getAllProvince() },
         computed: {
             ...mapGetters({
@@ -110,14 +101,7 @@
             },
             async getAllProvince() { // 获取省份列表 
                 await this.getCity(this.regionId)
-                // let params = {
-                //     regionId: this.regionId,
-                //     level: this.level
-                // }
-                // await this.$store.dispatch("address/areaListFun", params);
                 this.province = this.addressObj
-                console.log('_______',this.province)
-                // getProvince().then((res) => { this.province = res.data }).catch(() => { })
             },
             // 选择省份执行的事件  
             selectProvince(index) {
@@ -130,7 +114,6 @@
                 this.sSelectLiIndex = ''
                 this.addressId[0] = this.province[index].id
                 this.addressDetail[0] = this.province[index].name
-                // this.$emit('getAddressDetail', this.addressDetail, this.addressId)
                 this.pSearchC()
             },
             // 省份查找城市  
@@ -149,7 +132,6 @@
                     this.addressDetail.splice(1, this.addressId.length - 1)
                     this.addressId[1] = this.city[0].id
                     this.addressDetail[1] = this.city[0].name
-                    // this.$emit('getAddressDetail', this.addressDetail, this.addressId)
                     this.cSearchA()
                 }
             },
@@ -163,7 +145,6 @@
                 this.addressId[1] = this.city[index].id
                 this.addressDetail.splice(1, this.addressDetail.length - 1)
                 this.addressDetail[1] = this.city[index].name
-                // this.$emit('getAddressDetail', this.addressDetail, this.addressId)
                 this.cSearchA()
             },
             // 市查找区  
@@ -181,7 +162,6 @@
                     this.addressDetail.splice(2, this.addressId.length - 1)
                     this.addressId[2] = this.area[0].id
                     this.addressDetail[2] = this.area[0].name
-                    // this.$emit('getAddressDetail', this.addressDetail, this.addressId)
                     this.aSearchS()
                 }
             },
@@ -194,7 +174,6 @@
                 this.addressId[2] = this.area[index].id
                 this.addressDetail.splice(2, this.addressId.length - 1)
                 this.addressDetail[2] = this.area[index].name
-                // this.$emit('getAddressDetail', this.addressDetail, this.addressId)
                 this.aSearchS()
             },
             // 区查找街道  
@@ -213,7 +192,6 @@
                     this.addressDetail.splice(3, this.addressId.length - 1)
                     this.addressId[3] = this.street[0].id
                     this.addressDetail[3] = this.street[0].name
-                    // this.$emit('getAddressDetail', this.addressDetail, this.addressId)
                 }
             },
             // 选择区执行的事件  
@@ -245,7 +223,6 @@
                     this.sid = ''
                     this.hasSelectIndex = 0
                     this.addressId = []
-                    // this.$emit('getAddressDetail', this.addressDetail, this.addressId) // 此时，父组件需通过addressId的长度是否为0来判断是否将传递过来的isEmpty设置为false ，重置选择框的值
                 }
             }
         },

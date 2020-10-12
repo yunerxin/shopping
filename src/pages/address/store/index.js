@@ -19,7 +19,7 @@ const actions = {
         commit,
         state
     }, params) {
-        let data = await api.post2(`order-api/m/mall/v1/receipt-address/savesid=${state.sid}`, {
+        let data = await api.post2(`order-api/m/mall/v1/receipt-address/save?sid=${state.sid}`, {
             ...params,
             sid:state.sid,
             terminal:state.terminal

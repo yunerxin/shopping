@@ -25,7 +25,7 @@
                             v-else>选择规格参数</span></p>
                     <van-icon name="arrow" />
                 </div>
-                <div class="goods-detail-select-address">
+                <div class="goods-detail-select-address" @click='isChoose = true'>
                     <p>
                         <span style="color: #999;margin-right: .6rem;">送至</span>
                         <span>{{addressObj.length>0?addressObj[0].completeAddress:'请选择地区'}}</span>
@@ -40,6 +40,7 @@
         <van-popup v-model="showSelectSku" position="bottom" :style="{ height: '70%' }">
             <select-sku @closePop='closeSelectSku' :rsMap='rsMap' :code='productDetail.code'></select-sku>
         </van-popup>
+        <select-address v-if='isChoose' @getAddressDetail='getAddressDetail'></select-address>
     </div>
 </template>
 <script>
@@ -49,6 +50,7 @@
     import filters from '@/filters'
     import selectSku from "../components/selectSku.vue"
     import { mapGetters } from "vuex";
+    import selectAddress from '../../address/components/selectAddress.vue'
     export default {
         components: {
             [Swipe.name]: Swipe,
@@ -58,12 +60,14 @@
             [Dialog.name]: Dialog,
             [Popup.name]: Popup,
             [Button.name]: Button,
-            selectSku
+            selectSku,
+            selectAddress
         },
         data() {
             return {
                 showSelectSku: false,
                 productId: '',
+                isChoose:false
             }
         },
         computed: {
@@ -107,6 +111,10 @@
                         query: params
                     })
                 }
+            },
+            getAddressDetail(completeAddress, obj) {
+                this.addressObj[0].completeAddress = completeAddress
+                this.isChoose = false
             }
         }
     }

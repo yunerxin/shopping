@@ -62,24 +62,12 @@
         },
         methods: {
             async saveEdit() {
-                // let params = {
-                //     blockId: 3,
-                //     cityId: 1,
-                //     completeAddress: "北京市 北京市 东城区 东华门街道办事处金秋路",
-                //     detailAddress: "金秋路",
-                //     houseNum: "",
-                //     id: 527620,
-                //     isDefault: 1,
-                //     lat: "",
-                //     lng: "",
-                //     receiptName: "李先生",
-                //     receiptPhone: "15036000000",
-                //     regionId: 2,
-                //     townId: 4,
-                //     zipCode: "",
-                // }
+                this.addressObj.receiptName = this.addressObj.name
+                this.addressObj.receiptPhone = this.addressObj.tel
+                this.addressObj.completeAddress = this.addressObj.address
                 let params = Object.assign(this.addressObj,this.idObj)
                 await this.$store.dispatch('address/saveAddressFun',params);
+                this.$router.go(-1)
             },
             deleteAddress() {
                 Dialog.confirm({
